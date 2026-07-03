@@ -5878,15 +5878,18 @@ function timeUp() {
       var el = document.getElementById('visitor-count');
       if (!el) return;
       var counted = localStorage.getItem('vh_counted');
-      var url = window.location.origin + '/api/count';
+      var base = window.location.origin;
+      if (base.indexOf('github.io') !== -1) {
+        base = 'https://child-learning-hub.vercel.app';
+      }
       if (counted) {
-        fetch(url).then(function(r){ return r.json(); }).then(function(d){ el.textContent = d.value; }).catch(function(){});
+        fetch(base + '/api/count').then(function(r){ return r.json(); }).then(function(d){ el.textContent = d.value; }).catch(function(){ el.textContent = '—'; });
         return;
       }
-      fetch(url, { method: 'POST' }).then(function(r){ return r.json(); }).then(function(d){
+      fetch(base + '/api/count', { method: 'POST' }).then(function(r){ return r.json(); }).then(function(d){
         el.textContent = d.value;
         localStorage.setItem('vh_counted', '1');
-      }).catch(function(){});
+      }).catch(function(){ el.textContent = '—'; });
     }
 
     // ===== INIT =====
