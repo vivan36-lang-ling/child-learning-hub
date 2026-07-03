@@ -5874,6 +5874,21 @@ function timeUp() {
       });
     }
 
+    function initVisitorCount() {
+      var el = document.getElementById('visitor-count');
+      if (!el) return;
+      var counted = localStorage.getItem('vh_counted');
+      var url = window.location.origin + '/api/count';
+      if (counted) {
+        fetch(url).then(function(r){ return r.json(); }).then(function(d){ el.textContent = d.value; }).catch(function(){});
+        return;
+      }
+      fetch(url, { method: 'POST' }).then(function(r){ return r.json(); }).then(function(d){
+        el.textContent = d.value;
+        localStorage.setItem('vh_counted', '1');
+      }).catch(function(){});
+    }
+
     // ===== INIT =====
     initFontSize();
     initSound();
@@ -5883,6 +5898,7 @@ function timeUp() {
     loadQuizQuestion();
     resetProgressBadges();
     updateCategoryBadges();
+    initVisitorCount();
   </script>
 
 <footer style="
@@ -5894,6 +5910,6 @@ function timeUp() {
   border-top: 1px solid var(--color-border, #E2E8F0);
   margin-top: 40px;
 ">
-  Users: <span id="visitor-count">—</span>
+  Users: <span id="visitor-count">...</span>
 </footer>
 </body>
